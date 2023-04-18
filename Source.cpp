@@ -1,0 +1,182 @@
+#include <iostream>
+#include<fstream>
+#include<string>
+using namespace std;
+struct node {
+    string words;
+    struct node* next;
+};
+struct node* head;
+string arr[10];
+int fr = -1, re = -1, cor = 0, incor = 0;
+
+void add(string history) {
+    if (re == -1)
+    {
+        re++;
+        fr++;
+        arr[fr] = history;
+    }
+    else if (fr < 9) {
+        fr++;
+        arr[fr] = history;
+    }
+    else if (fr >= 9) {
+        while (re < 9) {
+            arr[re] = arr[re + 1];
+            re++;
+        }
+        arr[re] = history;
+        re = 0;
+    }
+}
+void insertEnd(string data) {
+
+    node* new_node = new node;
+    new_node->words = data;
+    new_node->next = NULL;
+
+    if (head == NULL)
+
+    {
+
+        head = new_node;
+
+    }
+    else
+    {
+
+        node* temp = head;
+
+        while (temp->next != NULL) {
+
+            temp = temp->next;
+
+        }
+        temp->next = new_node;
+
+    }
+}
+
+void displayLinkedList() {
+
+    if (head == NULL)
+
+    {
+
+        cout << "Linked List is empty\n";
+
+    }
+
+    else
+
+    {
+
+        node* temp = head;
+
+        while (temp->next != NULL) {
+
+            cout << temp->words << endl;
+
+            temp = temp->next;
+
+        }
+
+    }
+
+}
+int search(string data) {
+    int flags = -1;
+    node* temp = head;
+    while (temp->next != NULL) {
+        if (data == temp->words)
+        {
+            flags = 1;
+            break;
+        }
+        else if (data != temp->words) {
+            flags = 0;
+
+        }
+        temp = temp->next;
+    }
+    return flags;
+}
+void read() {
+    ifstream fin;
+    string line;
+    // by default open mode = ios::in mode
+    fin.open("F:\\Visual Studio SOURCE\\Spell Checker\\words.txt");
+
+    // Execute a loop until EOF (End of File)
+    while (fin) {
+
+        // Read a Line from File
+        getline(fin, line);
+
+        // Print line in Console
+        insertEnd(line);
+    }
+
+    // Close the file
+    fin.close();
+}
+int main() {
+    read();
+
+    cout << "~ ~ ~ ~ ~ ~ Spell Checker ~ ~ ~ ~ ~ ~\n";
+    char x = 0;
+    while (x != 1) {
+        //MENU
+        cout << "\t=====MENU=====" << endl;
+        cout << "Press 1: to Check Spelling." << endl;
+        cout << "Press 2: to Check History." << endl;
+        cout << "Press 3: to Exit the Program." << endl;
+        int slt;
+        cin >> slt;
+
+
+        switch (slt) {
+        case 1: {
+            string word;
+            cout << "\nEnter word to check(Enter in lower case letters): " << endl;
+            cin >> word;
+            add(word);
+            if (search(word) == 1) {
+                cout << "Your Spelling is Correct" << endl;
+                cor++;
+            }
+            else {
+                cout << "Your Spelling is Incorrect" << endl;
+                incor++;
+            }
+            break;
+        }
+        case 2: {
+            if (re == -1)
+                cout << "History is empty" << endl;
+            else
+                for (int i = 0; i < 10; i++)
+                {
+                    cout << arr[i] << endl;
+                }
+            cout << "Total correct words were: " << cor << endl;
+            cout << "Total incorrect words were: " << incor << endl;
+            break;
+        }
+
+        case 3:
+            return 0;
+        
+        default:
+            cout << "Invalid Input!";
+        }
+
+        cout << "\nDo you want to continue? (Y or N) \n";
+        cin >> x;
+
+        if (x == 'N' || x == 'n')
+            x = 1;
+
+    }
+}
